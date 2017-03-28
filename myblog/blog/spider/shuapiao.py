@@ -12,8 +12,25 @@ import datetime
 
 class Shuapiao():
 
+    # 将车站对应简写写成类属性，不用每次再访问一遍
+    station_list ={}
+
     def __init__(self):
-        pass
+        self.station_list = self.get_station_names()
+
+    # 获取车站对应简称
+    def get_station_names(self):
+        d1 = dict()
+        url = 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js'
+        html = self.request(url).content.replace('var station_names =\'', '').replace('\';', '')
+        names = html.split('@')
+        for i in names:
+            jianchengs = i.split('|')
+            # print jianchengs
+            if len(jianchengs) > 1:
+                # print jianchengs[0],jianchengs[1]
+                d1[jianchengs[1]] = jianchengs[2]
+        return d1
 
     # 访问外网方法
     def request(self, url):
@@ -23,9 +40,9 @@ class Shuapiao():
         return content
 
     # 查询车票信息
-    def getlist(self,from_station,to_station):
+    def getlist(self,from_station,to_station,train_date):
         #获取明天日期
-        train_date = self.getAfterDate()
+        # train_date = self.getAfterDate()
         url = 'https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date='+train_date + \
               '&leftTicketDTO.from_station='+from_station+'&leftTicketDTO.to_station='+to_station+'&purpose_codes=ADULT'
         html = self.request(url).content
@@ -33,7 +50,6 @@ class Shuapiao():
         try:
             dict_html = json.loads(html)['data']
             for i in dict_html:
-                ticket = []
                 queryLeft = i['queryLeftNewDTO']
                 station_train_code = queryLeft['station_train_code'].encode('utf-8')
                 swz_num = queryLeft['swz_num'].encode('utf-8')
@@ -61,8 +77,6 @@ class Shuapiao():
             # else:
             #     print("filed")  # 如果发送失败则会返回filed
             # print ticket_list
-
-
         except KeyError:
             print '未查询到数据！！！'
         # return json.dumps(ticket_list)
@@ -76,21 +90,6 @@ class Shuapiao():
             else:
                 print name+'还有余票%s 张' % seat
 
-
-    # 获取车站对应简称
-    def get_station_names(self):
-        d1 = dict()
-        url = 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js'
-        html = self.request(url).content.replace('var station_names =\'','').replace('\';','')
-        names = html.split('@')
-        for i in names:
-            jianchengs = i.split('|')
-            # print jianchengs
-            if len(jianchengs) > 1:
-                # print jianchengs[0],jianchengs[1]
-                d1[jianchengs[1]] = jianchengs[2]
-        return d1
-
     #获取n天后的日期
     def getAfterDate(self,day=1):
         now = datetime.datetime.now()
@@ -98,18 +97,12 @@ class Shuapiao():
         n_days = now + delta
         return n_days.strftime('%Y-%m-%d')
 
-    def serchTicket(self,from_station,to_station):
-        # from_station = raw_input("请输入出发地\n")
-        # to_station = raw_input("请输入目的地\n")
-        # from_station = "北京"
-        # to_station = "厦门"
-        d2 = self.get_station_names()
+    def serchTicket(self,from_station,to_station,train_date):
+        d2 = self.station_list
         try:
-            # print(d2[from_station])
-            # print(d2[to_station])
             from_station = d2[from_station]
             to_station = d2[to_station]
-            return self.getlist(from_station=from_station,to_station=to_station)
+            return self.getlist(from_station=from_station,to_station=to_station,train_date = train_date)
         except KeyError, e:
             print '输入车站有误！！！'
 #
@@ -122,5 +115,5 @@ class Shuapiao():
 #     except KeyError, e:
 #         print '输入车站有误'
 shua = Shuapiao()
-# lists = shua.serchTicket("北京","厦门")
+# lists = shua.serchTicket("北京","厦门","2017-03-29")
 # print lists

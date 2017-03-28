@@ -37,29 +37,27 @@ def edit_action(request):
     return render(request,'article_page.html',{'article':article})
 
 def train(request):
-    # return HttpResponse('Hello world!')
-    # articles = models.Article.objects.all()     #get(pk=1)
     return render(request,'train.html')
 
 # 查询余票
 def query_action(request):
     from_station = request.GET.get('from_station').encode("utf-8")
     to_station = request.GET.get('to_station').encode("utf-8")
-    print '出发地：',type(from_station)
-    print from_station == None
-    print type(from_station)
-    ticket_list = shua.serchTicket(from_station,to_station)
-    print ticket_list
-    return HttpResponse(ticket_list)
+    train_date = request.GET.get('train_date').encode("utf-8")
+
+    if from_station!= None and to_station != None and train_date != None :
+        ticket_list = shua.serchTicket(from_station,to_station,train_date)
+        return HttpResponse(ticket_list)
+    else:
+        return HttpResponse("")
 
 # 检查车站名称是否正确
 def station_action(request):
     flag = "0"
     #  将Unicode 转化为 str
     station_name = request.GET.get('station_name').encode("utf-8")
-    print "方法执行！！"
     # 0表示输入车站有误
-    station_dict = shua.get_station_names()
+    station_dict = shua.station_list
     try:
         print station_dict[station_name]
         flag = "1"
