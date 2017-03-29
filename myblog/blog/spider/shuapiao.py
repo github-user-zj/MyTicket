@@ -35,7 +35,7 @@ class Shuapiao():
     # 访问外网方法
     def request(self, url):
         headers = {
-            'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+            'User-Agent': "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"}
         content = requests.get(url, headers=headers, verify=False)
         return content
 
@@ -43,7 +43,7 @@ class Shuapiao():
     def getlist(self,from_station,to_station,train_date):
         #获取明天日期
         # train_date = self.getAfterDate()
-        url = 'https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date='+train_date + \
+        url = 'https://kyfw.12306.cn/otn/leftTicket/queryX?leftTicketDTO.train_date='+train_date + \
               '&leftTicketDTO.from_station='+from_station+'&leftTicketDTO.to_station='+to_station+'&purpose_codes=ADULT'
         html = self.request(url).content
         ticket_list = []
@@ -115,5 +115,5 @@ class Shuapiao():
 #     except KeyError, e:
 #         print '输入车站有误'
 shua = Shuapiao()
-# lists = shua.serchTicket("北京","厦门","2017-03-29")
-# print lists
+lists = shua.serchTicket("北京","上海","2017-04-30")
+print lists
