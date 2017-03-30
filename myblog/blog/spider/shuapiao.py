@@ -115,5 +115,5 @@ class Shuapiao():
 #     except KeyError, e:
 #         print '输入车站有误'
 shua = Shuapiao()
-lists = shua.serchTicket("北京","上海","2017-04-30")
-print lists
+# lists = shua.serchTicket("北京","上海","2017-04-30")
+# print lists

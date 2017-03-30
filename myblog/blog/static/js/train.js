@@ -85,7 +85,7 @@ $(document).ready(function () {
 
                     var html= ''
                     html += '<thead><th>车次</th><th>商务座</th><th>一等座</th><th>二等座</th><th>软卧</th><th>硬卧</th>' +
-                            '<th>软座</th><th>硬座</th><th>无座</th></thead>';
+                            '<th>软座</th><th>硬座</th><th>无座</th><th>备注</th></thead>';
                     if (data != "[]") {
                         var obj = jQuery.parseJSON(data);
                         $.each(obj, function (i, item) {
@@ -100,6 +100,7 @@ $(document).ready(function () {
                             html += '<td>' + item.rz_num + '</td>';
                             html += '<td>' + item.yz_num + '</td>';
                             html += '<td>' + item.wz_num + '</td>';
+                            html += '<td><button class="btn btn-default yunding_class" id="" value="'+item.station_train_code+'">预订</button></td>';
                             html += "</tr>";
                         });
                     }else{
@@ -114,10 +115,11 @@ $(document).ready(function () {
                     $("#from_station").val("ajax 出错！！")
                 }
             });
+
         return false;
     });
     /* 日历的日期 */
-    $("#train_date").val(getDate(1))
+    $(".date_input").val(getDate(1))
     function getDate(AddDayCount) {
         //获取当前日期
         var date_time = new Date();
